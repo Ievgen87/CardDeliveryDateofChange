@@ -19,23 +19,20 @@ import static com.codeborne.selenide.Selenide.open;
 
 public class CarddeliveryTest {
     @BeforeEach
-    void setup(){
+    void setup() {
         open("http://localhost:9999");
-    }
-    private String generateData(long addDays, String pattern) {
-        return LocalDate.now().plusDays(addDays).format(DateTimeFormatter.ofPattern(pattern));
     }
 
     @Test
     @DisplayName("date of change")
-    void dateOfChange(){
+    void dateOfChange() {
         var validUser = DateGenerator.Registration.generateUser("ru");
         var daysToAddForFirstMeeting = 4;
         var firstMeetingDate = DateGenerator.generatorData(daysToAddForFirstMeeting);
-        var daysToAddForSecondMeeting = 4;
+        var daysToAddForSecondMeeting = 7;
         var secondMeetingDate = DateGenerator.generatorData(daysToAddForSecondMeeting);
         $("[data-test-id=city] input").setValue(validUser.getCity());
-        $("[data-test-id=date] input").sendKeys(Keys.chord(Keys.SHIFT, Keys.HOME), Keys.DELETE);
+        $("[data-test-id=date] input").sendKeys(Keys.chord(Keys.SHIFT, Keys.HOME), Keys.BACK_SPACE);
         $("[data-test-id=date] input").setValue(firstMeetingDate);
         $("[data-test-id=name] input").setValue(validUser.getName());
         $("[data-test-id=phone] input").setValue(validUser.getPhone());
@@ -45,7 +42,7 @@ public class CarddeliveryTest {
         $("[data-test-id='success-notification'] .notification__content")
                 .shouldBe(visible)
                 .shouldHave(Condition.exactText("Встреча успешно забронирована на " + firstMeetingDate));
-        $("[data-test-id=date] input").sendKeys(Keys.chord(Keys.SHIFT, Keys.HOME), Keys.DELETE);
+        $("[data-test-id=date] input").sendKeys(Keys.chord(Keys.SHIFT, Keys.HOME), Keys.BACK_SPACE);
         $("[data-test-id=date] input").setValue(secondMeetingDate);
         $(byText("Запланировать")).click();
         $("[data-test-id='replan-notification'] .notification__content")
@@ -55,7 +52,6 @@ public class CarddeliveryTest {
         $("[data-test-id='success-notification'] .notification__content")
                 .shouldBe(visible)
                 .shouldHave(Condition.exactText("Встреча успешно забронирована на " + secondMeetingDate));
-
 
 
     }
