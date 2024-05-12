@@ -12,6 +12,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
@@ -38,20 +39,22 @@ public class CarddeliveryTest {
         $("[data-test-id=phone] input").setValue(validUser.getPhone());
         $("[data-test-id=agreement]").click();
         $(byText("Запланировать")).click();
-        $(byText("Успешно")).shouldBe(visible, Duration.ofSeconds(15));
+        $("[data-test-id='success-notification'] .notification__title")
+                .shouldBe(visible, Duration.ofSeconds(15))
+                .shouldHave(text("Успешно"));
         $("[data-test-id='success-notification'] .notification__content")
                 .shouldBe(visible)
-                .shouldHave(Condition.exactText("Встреча успешно забронирована на " + firstMeetingDate));
+                .shouldHave(text("Встреча успешно запланирована на " + firstMeetingDate));
         $("[data-test-id=date] input").sendKeys(Keys.chord(Keys.SHIFT, Keys.HOME), Keys.BACK_SPACE);
         $("[data-test-id=date] input").setValue(secondMeetingDate);
         $(byText("Запланировать")).click();
         $("[data-test-id='replan-notification'] .notification__content")
                 .shouldBe(visible)
-                .shouldHave(Condition.exactText("У вас уже запланирована встреча на другую дату. Перепланировать?"));
+                .shouldHave(text("У вас уже запланирована встреча на другую дату. Перепланировать?"));
         $("[data-test-id='replan-notification'] .button").click();
         $("[data-test-id='success-notification'] .notification__content")
                 .shouldBe(visible)
-                .shouldHave(Condition.exactText("Встреча успешно забронирована на " + secondMeetingDate));
+                .shouldHave(text("Встреча успешно запланирована на " + secondMeetingDate));
 
 
     }
